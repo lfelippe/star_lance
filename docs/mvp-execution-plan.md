@@ -1,5 +1,15 @@
 # MVP Execution Plan
 
+## Status
+
+- Milestone 1 is implemented
+- Current branch used for implementation: `feature/phaser-milestone-1`
+- Implemented foundation:
+  - Phaser bootstrap replaced the Vite starter UI
+  - `BootScene`, `MenuScene`, `GameScene`, and a `GameOverScene` placeholder were added
+  - temporary runtime-generated textures were added for the player ship and scrolling background
+  - player movement, HUD, and initial session state are in place
+
 ## Why this file exists
 
 This file is the execution plan for the Phaser 2D side-scrolling shooter MVP.
@@ -44,6 +54,10 @@ src/
 ```
 
 ## Milestone 1: Project foundation and playable shell
+
+### Status
+
+Completed
 
 ### Goal
 
