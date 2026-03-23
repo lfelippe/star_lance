@@ -21,6 +21,9 @@ This file is the execution plan for the Phaser 2D side-scrolling shooter MVP.
 - Avoid upgrades, meta-progression, backend, multiplayer, and procedural systems.
 - Prefer simple scene orchestration and small modules over generic abstractions.
 - Prioritize responsive controls and visual clarity over content volume.
+- Every milestone must ship with automated test coverage.
+- Prefer unit tests for isolated logic and end-to-end tests for player-visible flows.
+- Do not treat test coverage as a polish task deferred to the end of the MVP.
 
 ## Target MVP outcome
 
@@ -121,6 +124,7 @@ Make the player interact offensively and establish projectile lifecycle rules.
 
 - Prefer simple pooling if bullet count is moderate enough to justify it
 - Keep weapon timing logic testable outside the scene
+- Add unit tests for weapon timing and an end-to-end firing smoke test in the same milestone
 
 ## Milestone 3: Basic enemies and scoring
 
@@ -149,6 +153,7 @@ Introduce enemies as targets and connect destruction to score gain.
 
 - Start with one enemy type only
 - Score values should be data-driven from config, not hardcoded in scene logic
+- Add unit tests for score and spawn helpers plus an end-to-end combat loop test
 
 ## Milestone 4: Damage, lives, and fail state
 
@@ -176,6 +181,7 @@ Turn the prototype into a real lose-able game loop.
 
 - Keep restart based on fresh scene/session initialization
 - Avoid partial manual cleanup when a full reset is simpler
+- Add unit tests for damage/life rules plus an end-to-end game-over-and-restart test
 
 ## Milestone 5: Enemy variety and linear progression
 
@@ -203,6 +209,7 @@ Make the game feel like a structured stage instead of a flat target range.
 
 - Keep progression time-based for MVP
 - Do not add branching stage logic
+- Add unit tests for progression helpers plus an end-to-end wave progression test
 
 ## Milestone 6: Minimal polish pass
 
@@ -229,10 +236,17 @@ Improve readability and arcade feel without expanding game scope.
 
 - This is a tuning pass, not a feature pass
 - Do not add upgrades, bosses, or new meta-systems here
+- Extend end-to-end coverage to the full MVP loop before calling the project complete
 
-## Lightweight testing plan
+## Testing blueprint
 
-### Unit tests worth adding
+### Required testing rule
+
+- Every milestone must add or update unit tests for the logic introduced in that milestone.
+- Every milestone must add or update at least one end-to-end test that exercises the player-visible behavior introduced in that milestone.
+- A milestone is not complete until its unit tests and end-to-end tests pass in CI or the local verification workflow.
+
+### Unit test expectations
 
 - Session creation/reset functions
 - Weapon cooldown timing logic
@@ -241,13 +255,14 @@ Improve readability and arcade feel without expanding game scope.
 - Wave progression helpers
 - Score and life update rules
 
-### Lightweight integration tests worth adding
+### End-to-end test expectations
 
 - Session reset on restart
-- Spawn controller advancing through wave data
 - Player weapon respecting fire cadence over time
+- Enemy spawning and score gain during combat
 - Score changing after enemy destruction events
 - Game over transition when lives reach zero
+- Full run start-to-restart smoke coverage once the MVP loop exists
 
 ### Manual checklist
 
