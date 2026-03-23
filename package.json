@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:build": "tsc -p tsconfig.test.json && node -e \"require('node:fs').mkdirSync('.test-dist', { recursive: true }); require('node:fs').writeFileSync('.test-dist/package.json', '{\\\"type\\\":\\\"commonjs\\\"}\\n')\"",
+    "test": "npm run test:build && node --test .test-dist/tests/**/*.test.js"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
