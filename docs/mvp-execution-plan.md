@@ -3,14 +3,15 @@
 ## Status
 
 - Milestone 1 is implemented
-- Milestone 2 gameplay implementation is in progress on `feature/player-shooting`
-- Current branch used for implementation: `feature/player-shooting`
+- Milestone 2 is implemented
+- Milestone 3 implementation is in progress on `feature/enemy-spawning`
 - Implemented foundation:
   - Phaser bootstrap replaced the Vite starter UI
   - `BootScene`, `MenuScene`, `GameScene`, and a `GameOverScene` placeholder were added
   - temporary runtime-generated textures were added for the player ship and scrolling background
   - player movement, HUD, and initial session state are in place
-  - player shooting, projectile cleanup, and weapon cooldown unit tests are in place
+  - player shooting, projectile cleanup, weapon cooldown unit tests, and a Playwright firing smoke test are in place
+  - basic enemy spawning, bullet/enemy collisions, scoring, and combat tests are in place
 
 ## Why this file exists
 
@@ -104,7 +105,7 @@ Replace the current Vite starter UI with the Phaser bootstrap and a minimal play
 
 ### Status
 
-In progress
+Completed
 
 Implemented:
 
@@ -117,9 +118,9 @@ Implemented:
 - unit tests for weapon timing
 - Playwright end-to-end harness and firing smoke test
 
-Remaining:
+Environment note:
 
-- Ensure the local or CI environment has Playwright browser system dependencies installed
+- Running Playwright locally requires browser system dependencies to be installed.
 
 ### Goal
 
@@ -148,6 +149,60 @@ Make the player interact offensively and establish projectile lifecycle rules.
 - Add unit tests for weapon timing and an end-to-end firing smoke test in the same milestone
 
 ## Milestone 3: Basic enemies and scoring
+
+### Status
+
+Implementation complete; awaiting Playwright environment verification
+
+Implemented:
+
+- Runtime-generated enemy scout texture
+- Deterministic right-side enemy spawning
+- One straight-moving enemy type
+- Enemy cleanup after leaving the left edge
+- Bullet/enemy overlap handling
+- Enemy destruction on bullet hit
+- Score increment on enemy destruction
+- Unit tests for spawn lanes, enemy bounds, and score updates
+- Playwright combat smoke test
+
+### Implementation checklist
+
+- Add an enemy texture in `BootScene` using the existing temporary runtime texture pattern.
+- Add enemy balance values in `balance.ts`:
+  - spawn interval
+  - enemy speed
+  - enemy HP
+  - score value
+  - enemy spawn margin
+- Add an `Enemy` entity under `src/game/entities/enemies/`.
+- Add an `EnemyFactory` or narrow spawn helper that creates one straight-moving enemy type.
+- Add a small pure spawn helper for right-side spawn coordinates so spawn math is unit-testable.
+- Add score update behavior to `GameSessionStore`.
+- Wire an enemy group into `GameScene`.
+- Spawn enemies from the right side at fixed intervals.
+- Add Arcade overlap handling for player bullets vs enemies.
+- Destroy or damage enemies on bullet hit.
+- Increment score immediately when an enemy is destroyed.
+- Remove enemies when they leave the left side of the screen.
+
+### Testing checklist
+
+- Unit test enemy spawn coordinate helpers.
+- Unit test score increment/reset behavior in session state.
+- Unit test enemy cleanup boundary helpers if cleanup logic is extracted.
+- Add or extend a Playwright combat smoke test:
+  - start a run
+  - wait for at least one enemy
+  - fire bullets
+  - verify score increases after a hit/destroy event
+
+### Non-goals for this milestone
+
+- Do not add enemy bullets.
+- Do not add multiple enemy patterns.
+- Do not add wave definitions yet.
+- Do not add damage/game-over behavior yet, except where collision plumbing makes a future hook obvious.
 
 ### Goal
 
