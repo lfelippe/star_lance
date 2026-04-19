@@ -8,6 +8,7 @@ import {
   PLAYER_START_Y,
 } from '../../config/balance'
 import { ASSET_KEYS } from '../../config/assetKeys'
+import { getPlayerMuzzlePosition } from './playerMuzzle'
 import { clamp } from '../../utils/clamp'
 import type { InputState } from '../../types/gameTypes'
 
@@ -20,6 +21,12 @@ export class Player {
       .setDepth(10)
 
     this.sprite.setCollideWorldBounds(false)
+  }
+
+  getMuzzlePosition(): Phaser.Math.Vector2 {
+    const muzzle = getPlayerMuzzlePosition(this.sprite)
+
+    return new Phaser.Math.Vector2(muzzle.x, muzzle.y)
   }
 
   update(input: InputState): void {

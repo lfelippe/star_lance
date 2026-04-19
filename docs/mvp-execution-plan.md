@@ -3,12 +3,14 @@
 ## Status
 
 - Milestone 1 is implemented
-- Current branch used for implementation: `feature/phaser-milestone-1`
+- Milestone 2 gameplay implementation is in progress on `feature/player-shooting`
+- Current branch used for implementation: `feature/player-shooting`
 - Implemented foundation:
   - Phaser bootstrap replaced the Vite starter UI
   - `BootScene`, `MenuScene`, `GameScene`, and a `GameOverScene` placeholder were added
   - temporary runtime-generated textures were added for the player ship and scrolling background
   - player movement, HUD, and initial session state are in place
+  - player shooting, projectile cleanup, and weapon cooldown unit tests are in place
 
 ## Why this file exists
 
@@ -99,6 +101,25 @@ Replace the current Vite starter UI with the Phaser bootstrap and a minimal play
 - No shooting yet unless it comes almost for free
 
 ## Milestone 2: Player shooting loop
+
+### Status
+
+In progress
+
+Implemented:
+
+- `PlayerWeapon`
+- `PlayerBullet`
+- fire input handling
+- continuous rate-limited shooting
+- off-screen bullet cleanup
+- centralized cooldown and projectile values
+- unit tests for weapon timing
+- Playwright end-to-end harness and firing smoke test
+
+Remaining:
+
+- Ensure the local or CI environment has Playwright browser system dependencies installed
 
 ### Goal
 
