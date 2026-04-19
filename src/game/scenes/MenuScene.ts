@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { GAME_HEIGHT, GAME_WIDTH } from '../config/balance'
+import { updateGameDebug } from '../debug/gameDebug'
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -7,6 +8,11 @@ export class MenuScene extends Phaser.Scene {
   }
 
   create(): void {
+    updateGameDebug({
+      bulletCount: 0,
+      scene: 'MenuScene',
+    })
+
     this.add
       .rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0x030712, 0.78)
       .setOrigin(0, 0)
