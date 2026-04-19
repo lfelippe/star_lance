@@ -12,4 +12,12 @@ export const PLAYER_MUZZLE_OFFSET_X = 34
 export const BACKGROUND_SCROLL_SPEED_FAR = 18
 export const BACKGROUND_SCROLL_SPEED_NEAR = 42
 
+export const ENEMY_SCOUT_HP = 1
+export const ENEMY_SCOUT_SCORE_VALUE = 100
+export const ENEMY_SCOUT_SPEED = 150
+export const ENEMY_SPAWN_INTERVAL_MS = 900
+export const ENEMY_SPAWN_MARGIN_Y = 56
+export const ENEMY_SPAWN_OFFSET_X = 26
+export const ENEMY_SPAWN_LANES_Y = [PLAYER_START_Y, 160, 380] as const
+
 export const INITIAL_LIVES = 3

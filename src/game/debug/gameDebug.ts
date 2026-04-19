@@ -2,6 +2,7 @@ import type { GameSession } from '../types/gameTypes'
 
 export interface GameDebugState {
   bulletCount: number
+  enemyCount: number
   scene: string
   session?: GameSession
 }

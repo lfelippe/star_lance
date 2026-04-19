@@ -18,4 +18,12 @@ export class GameSessionStore {
   tick(deltaMs: number): void {
     this.session.elapsedTimeMs += deltaMs
   }
+
+  addScore(points: number): void {
+    if (points < 0) {
+      throw new Error('Score points must not be negative')
+    }
+
+    this.session.score += points
+  }
 }

@@ -10,6 +10,7 @@ export class MenuScene extends Phaser.Scene {
   create(): void {
     updateGameDebug({
       bulletCount: 0,
+      enemyCount: 0,
       scene: 'MenuScene',
     })
 
