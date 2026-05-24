@@ -4,7 +4,9 @@
 
 - Milestone 1 is implemented
 - Milestone 2 is implemented
-- Milestone 3 implementation is in progress on `feature/enemy-spawning`
+- Milestone 3 is implemented
+- Milestone 4 is implemented
+- Milestone 5 is implemented
 - Implemented foundation:
   - Phaser bootstrap replaced the Vite starter UI
   - `BootScene`, `MenuScene`, `GameScene`, and a `GameOverScene` placeholder were added
@@ -12,6 +14,8 @@
   - player movement, HUD, and initial session state are in place
   - player shooting, projectile cleanup, weapon cooldown unit tests, and a Playwright firing smoke test are in place
   - basic enemy spawning, bullet/enemy collisions, scoring, and combat tests are in place
+  - player/enemy collisions now remove lives, trigger game over, and allow restarting into a clean run
+  - wave-driven spawning, a second enemy pattern, and progression reset coverage are in place
 
 ## Why this file exists
 
@@ -152,7 +156,7 @@ Make the player interact offensively and establish projectile lifecycle rules.
 
 ### Status
 
-Implementation complete; awaiting Playwright environment verification
+Completed
 
 Implemented:
 
@@ -164,7 +168,7 @@ Implemented:
 - Enemy destruction on bullet hit
 - Score increment on enemy destruction
 - Unit tests for spawn lanes, enemy bounds, and score updates
-- Playwright combat smoke test
+- Playwright combat smoke test passing locally
 
 ### Implementation checklist
 
@@ -233,6 +237,21 @@ Introduce enemies as targets and connect destruction to score gain.
 
 ## Milestone 4: Damage, lives, and fail state
 
+### Status
+
+Completed
+
+Implemented:
+
+- Player life reduction in `GameSessionStore`
+- Player/enemy collision handling in `GameScene`
+- HUD life updates during active play
+- Game-over transition when lives reach zero
+- Functional `GameOverScene` with final score display
+- Restart flow from game over back into a fresh run
+- Unit tests for life loss, game-over transition, and run reset
+- Playwright end-to-end coverage for game-over and restart
+
 ### Goal
 
 Turn the prototype into a real lose-able game loop.
@@ -260,6 +279,20 @@ Turn the prototype into a real lose-able game loop.
 - Add unit tests for damage/life rules plus an end-to-end game-over-and-restart test
 
 ## Milestone 5: Enemy variety and linear progression
+
+### Status
+
+Completed
+
+Implemented:
+
+- Data-driven wave definitions with predictable timed spawn events
+- `SpawnController` and pure progression helpers for wave advancement
+- A second enemy type with sine-wave movement
+- Wave progression debug state for deterministic browser verification
+- Unit tests for enemy behavior math and wave progression
+- Integration coverage for the spawn controller
+- Playwright coverage for wave advancement and progression reset on restart
 
 ### Goal
 
