@@ -1,22 +1,30 @@
 import Phaser from 'phaser'
-import { ASSET_KEYS } from '../../config/assetKeys'
-import { ENEMY_SCOUT_HP, ENEMY_SCOUT_SCORE_VALUE, ENEMY_SCOUT_SPEED } from '../../config/balance'
 import { isPastLeftEdge } from './enemyBounds'
 import { resolveEnemyHit } from './enemyCombat'
+import type { EnemyBlueprint } from './enemyCatalog'
+import { getEnemyBehaviorOffsetY } from './enemyBehaviors'
 
 export class Enemy extends Phaser.Physics.Arcade.Image {
-  private hp = ENEMY_SCOUT_HP
+  private hp: number
+  private readonly spawnY: number
+  private readonly blueprint: EnemyBlueprint
+  private elapsedMs = 0
 
-  readonly scoreValue = ENEMY_SCOUT_SCORE_VALUE
+  readonly scoreValue: number
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, ASSET_KEYS.enemyScout)
+  constructor(scene: Phaser.Scene, x: number, y: number, blueprint: EnemyBlueprint) {
+    super(scene, x, y, blueprint.assetKey)
 
     scene.add.existing(this)
     scene.physics.add.existing(this)
 
+    this.blueprint = blueprint
+    this.hp = blueprint.hp
+    this.scoreValue = blueprint.scoreValue
+    this.spawnY = y
+
     this.setDepth(8)
-    this.setVelocityX(-ENEMY_SCOUT_SPEED)
+    this.setVelocityX(-blueprint.speedX)
     this.setImmovable(true)
 
     if (this.body instanceof Phaser.Physics.Arcade.Body) {
@@ -35,7 +43,13 @@ export class Enemy extends Phaser.Physics.Arcade.Image {
     return hit.destroyed
   }
 
-  update(): void {
+  update(_: number, delta: number): void {
+    this.elapsedMs += delta
+
+    if (this.blueprint.behavior.kind !== 'straight') {
+      this.y = this.spawnY + getEnemyBehaviorOffsetY(this.blueprint.behavior, this.elapsedMs)
+    }
+
     if (isPastLeftEdge(this.x, this.displayWidth)) {
       this.destroy()
     }

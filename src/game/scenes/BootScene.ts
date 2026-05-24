@@ -13,6 +13,7 @@ export class BootScene extends Phaser.Scene {
     this.createPlayerTexture()
     this.createPlayerBulletTexture()
     this.createEnemyScoutTexture()
+    this.createEnemyRaiderTexture()
     this.scene.start('MenuScene')
   }
 
@@ -74,6 +75,21 @@ export class BootScene extends Phaser.Scene {
     graphics.lineStyle(3, 0xffe0e5, 0.85)
     graphics.strokeTriangle(48, 20, 0, 0, 0, 40)
     graphics.generateTexture(ASSET_KEYS.enemyScout, 48, 40)
+    graphics.destroy()
+  }
+
+  private createEnemyRaiderTexture(): void {
+    const graphics = this.make.graphics({ x: 0, y: 0 }, false)
+
+    graphics.fillStyle(0x8dffb3, 1)
+    graphics.fillTriangle(52, 20, 8, 0, 8, 40)
+    graphics.fillStyle(0x38d98f, 1)
+    graphics.fillTriangle(36, 20, 0, 10, 0, 30)
+    graphics.fillStyle(0xdffff0, 0.95)
+    graphics.fillTriangle(24, 20, 8, 16, 8, 24)
+    graphics.lineStyle(3, 0xf1fff7, 0.85)
+    graphics.strokeTriangle(52, 20, 8, 0, 8, 40)
+    graphics.generateTexture(ASSET_KEYS.enemyRaider, 52, 40)
     graphics.destroy()
   }
 }

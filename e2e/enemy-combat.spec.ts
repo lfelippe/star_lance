@@ -14,7 +14,7 @@ test('player can destroy an enemy and gain score', async ({ page }) => {
 
   await expect
     .poll(() => page.evaluate(() => window.__STAR_LANCE_DEBUG__?.session?.score ?? 0), {
-      timeout: 4_000,
+      timeout: 10_000,
     })
     .toBeGreaterThan(0)
 

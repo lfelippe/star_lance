@@ -1,13 +1,13 @@
 import Phaser from 'phaser'
 import { createInputState, type GameInputController } from '../input/createInputState'
-import { ENEMY_SPAWN_INTERVAL_MS } from '../config/balance'
 import { Enemy } from '../entities/enemies/Enemy'
 import { EnemyFactory } from '../entities/enemies/EnemyFactory'
 import { PlayerBullet } from '../entities/projectiles/PlayerBullet'
 import { Player } from '../entities/player/Player'
 import { PlayerWeapon } from '../entities/player/PlayerWeapon'
 import { BackgroundScroller } from '../systems/scrolling/BackgroundScroller'
-import { updateSpawnTimer } from '../systems/spawning/spawnTimer'
+import { SpawnController } from '../systems/spawning/SpawnController'
+import { WAVE_DEFINITIONS } from '../systems/spawning/waveDefinitions'
 import { updateGameDebug } from '../debug/gameDebug'
 import { GameSessionStore } from '../state/gameSession'
 import { Hud } from '../ui/Hud'
@@ -19,17 +19,18 @@ export class GameScene extends Phaser.Scene {
   private playerWeapon!: PlayerWeapon
   private enemies!: Phaser.GameObjects.Group
   private enemyFactory!: EnemyFactory
-  private enemySpawnElapsedMs = 0
-  private enemySpawnCount = 0
+  private spawnController!: SpawnController<Enemy>
   private backgroundScroller!: BackgroundScroller
   private session!: GameSessionStore
   private hud!: Hud
+  private isEndingRun = false
 
   constructor() {
     super('GameScene')
   }
 
   create(): void {
+    this.isEndingRun = false
     this.session = new GameSessionStore()
     this.session.startRun()
 
@@ -40,10 +41,20 @@ export class GameScene extends Phaser.Scene {
     this.playerWeapon = new PlayerWeapon()
     this.enemies = this.add.group({ runChildUpdate: true })
     this.enemyFactory = new EnemyFactory(this)
+    this.spawnController = new SpawnController(WAVE_DEFINITIONS, (spawn) =>
+      this.enemyFactory.createForWaveSpawn(spawn),
+    )
     this.physics.add.overlap(
       this.playerBullets,
       this.enemies,
       this.handlePlayerBulletEnemyOverlap,
+      undefined,
+      this,
+    )
+    this.physics.add.overlap(
+      this.player.getSprite(),
+      this.enemies,
+      this.handlePlayerEnemyOverlap,
       undefined,
       this,
     )
@@ -53,6 +64,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(_: number, delta: number): void {
+    if (this.isEndingRun) {
+      return
+    }
+
     this.session.tick(delta)
     this.backgroundScroller.update(delta)
     this.updateEnemySpawning(delta)
@@ -73,26 +88,21 @@ export class GameScene extends Phaser.Scene {
   private syncDebug(): void {
     updateGameDebug({
       bulletCount: this.playerBullets.countActive(true),
+      controls: {
+        triggerPlayerHit: () => {
+          this.applyPlayerHit()
+        },
+      },
       enemyCount: this.enemies.countActive(true),
+      progression: this.spawnController.getSnapshot(),
       scene: 'GameScene',
       session: this.session.getSnapshot(),
     })
   }
 
   private updateEnemySpawning(deltaMs: number): void {
-    const spawnTimer = updateSpawnTimer(
-      {
-        elapsedMs: this.enemySpawnElapsedMs,
-      },
-      deltaMs,
-      ENEMY_SPAWN_INTERVAL_MS,
-    )
-
-    this.enemySpawnElapsedMs = spawnTimer.elapsedMs
-
-    for (let index = 0; index < spawnTimer.spawnsToCreate; index += 1) {
-      this.enemies.add(this.enemyFactory.createScout(this.enemySpawnCount))
-      this.enemySpawnCount += 1
+    for (const enemy of this.spawnController.update(deltaMs)) {
+      this.enemies.add(enemy)
     }
   }
 
@@ -108,6 +118,37 @@ export class GameScene extends Phaser.Scene {
     if (enemy.takeDamage(1)) {
       this.session.addScore(enemy.scoreValue)
       this.hud.sync(this.session.getSnapshot())
+    }
+  }
+
+  private handlePlayerEnemyOverlap: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (
+    _playerObject,
+    enemyObject,
+  ) => {
+    if (this.isEndingRun) {
+      return
+    }
+
+    const enemy = enemyObject as Enemy
+    enemy.destroy()
+    this.applyPlayerHit()
+  }
+
+  private applyPlayerHit(): void {
+    if (this.isEndingRun) {
+      return
+    }
+
+    this.session.loseLife()
+    const session = this.session.getSnapshot()
+    this.hud.sync(session)
+    this.syncDebug()
+
+    if (this.session.isGameOver()) {
+      this.isEndingRun = true
+      this.scene.start('GameOverScene', {
+        score: session.score,
+      })
     }
   }
 }
